@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('skill_id')->constrained()->onDelete('cascade');
             $table->enum('nivel_academico', ['regular', 'intermediario', 'avancado'])->default('regular');
-            $table->string('tempo_experiencia')->nullable();
+            $table->integer('tempo_experiencia')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
         });

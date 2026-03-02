@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('skill_id')->constrained()->onDelete('cascade');
             $table->string('mensagem')->nullable();
-            $table->enum('status', ['pendente', 'confirmada', 'recusada']);
+            $table->enum('status', ['pendente', 'confirmada', 'recusada'])->default('pendente');
             $table->timestamps();
         });
     }

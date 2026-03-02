@@ -80,11 +80,9 @@
     <header>
         <div class="container">
             <nav>
-                <a href="{{ url('/') }}">Home</a>
-                <a href="{{ route('cadastro') }}">Cadastro</a>
                 <a href="{{ route('login') }}">Login</a>
                 @auth
-                    <a href="{{ route('dashboard') }}">Dashboard</a>
+                    <a href="{{ route('dashboard') }}">Menu</a>
                     <form style="display:inline;" action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit" style="background:none; border:none; color:white; cursor:pointer; font-weight:bold;">Logout</button>

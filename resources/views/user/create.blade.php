@@ -2,51 +2,52 @@
 
 @section('content')
 <div class="cadastro-container">
-    <h1>Login</h1>
+    <h1>Cadastro de Usuário</h1>
 
-    {{-- Mensagem de erro de login --}}
-    @if(session('error'))
-        <div class="alert alert-error">{{ session('error') }}</div>
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    {{-- Validação --}}
-    @if($errors->any())
-        <div class="alert alert-error">
-            <ul>
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form class="form-cadastro" method="POST" action="{{ route('login.submit') }}">
+    <form class="form-cadastro" action="{{ route('cadastro.submit') }}" method="POST">
         @csrf
+        <label>Nome</label>
+        <input type="text" name="name" value="{{ old('name') }}">
+        @error('name') <div class="alert alert-error">{{ $message }}</div> @enderror
 
         <label>Email</label>
-        <input type="email" name="email" placeholder="example@gmail.com" value="{{ old('email') }}" required autofocus>
+        <input type="email" name="email" value="{{ old('email') }}">
         @error('email') <div class="alert alert-error">{{ $message }}</div> @enderror
 
         <label>Senha</label>
-        <input type="password" placeholder="Insira uma senha forte" name="password" required>
+        <input type="password" name="password">
         @error('password') <div class="alert alert-error">{{ $message }}</div> @enderror
 
-        <button type="submit" class="btn-login">Entrar</button>
+        <label>Confirmar Senha</label>
+        <input type="password" name="password_confirmation">
+
+        <label>Habilidades</label>
+        <select name="skills">
+            <option value="" selected disabled>Selecione uma habilidade</option>
+            @foreach($skills as $skill)
+                <option value="{{ $skill->id }}">{{ $skill->name }}</option>
+            @endforeach
+        </select>
+
+        <button type="submit" class="btn-cadastrar">Cadastrar</button>
     </form>
 
-    <!-- Card para cadastro de admin ou acesso alternativo -->
+    <!-- Card para cadastro de admin -->
     <div class="admin-card">
-        <h3>Não possui conta?</h3>
-        <p>Crie uma conta para acessar a plataforma.</p>
-        <a href="{{ route('cadastro') }}" class="btn-admin">Cadastrar-se</a>
+        <h3>Deseja entrar como Administrador?</h3>
+        <p>Admins têm acesso à gestão de usuários e habilidades.</p>
+        <a href="{{ route('login') }}" class="btn-admin">Entrar como Admin</a>
     </div>
 </div>
 
 <style>
-    
-/* Mesmos estilos do cadastro */
+/* Container geral */
 .cadastro-container {
-    max-width: 500px;
+    max-width: 600px;
     margin: 50px auto;
     padding: 25px;
     display: flex;
@@ -57,6 +58,7 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
+/* Formulário */
 .form-cadastro {
     display: flex;
     flex-direction: column;
@@ -67,28 +69,16 @@
     font-weight: 600;
 }
 
-.form-cadastro input {
+.form-cadastro input,
+.form-cadastro select {
     padding: 10px;
     border-radius: 6px;
     border: 1px solid #ccc;
     width: 100%;
 }
 
-.btn-login{
-    padding: 12px;
-    margin-top: 12px;
-    background-color: #1b5fa7;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
-}
-
 .btn-cadastrar {
     padding: 12px;
-    margin-top: 12px;
     background-color: #2d89ef;
     color: #fff;
     border: none;
@@ -97,15 +87,17 @@
     font-weight: 600;
     transition: background-color 0.3s ease;
 }
-
-.btn-login:hover {
-    background-color: #1b5fa7; 
-}
-
 .btn-cadastrar:hover {
     background-color: #1b5fa7;
 }
 
+/* Alertas */
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px;
+    border-radius: 5px;
+}
 .alert-error {
     background-color: #f8d7da;
     color: #721c24;
@@ -113,11 +105,9 @@
     border-radius: 5px;
 }
 
+/* Card Admin */
 .admin-card {
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
     padding: 20px;
     background-color: #eef3f7;
     border-radius: 10px;

@@ -14,8 +14,8 @@ return new class extends Migration
             $table->date('data_sessao');
             $table->time('start_time');
             $table->time('end_time');
-            $table->enum('status', ['pendente', 'em andamento', 'concluida', 'cancelada']);
-            $table->text('observacoes');
+            $table->enum('status', ['pendente', 'em andamento', 'concluida', 'cancelada'])->default('pendente');
+            $table->text('observacoes')->nullable();
             $table->timestamps();
         });
     }

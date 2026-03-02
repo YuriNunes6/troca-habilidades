@@ -2,63 +2,64 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SkillRequest;
+use App\Models\Session;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RequestController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'to_user_id' => 'required|exists:users,id|different:from_user_id',
+            'skill_offer_id' => 'required|exists:skills,id',
+            'skill_wanted_id' => 'required|exists:skills,id',
+        ]);
+
+        SkillRequest::create([
+            'from_user_id' => Auth::id(),
+            'to_user_id' => $request->to_user_id,
+            'skill_offer_id' => $request->skill_offer_id,
+            'skill_wanted_id' => $request->skill_wanted_id,
+            'status' => 'pendente'
+        ]);
+
+        return back()->with('success', 'Solicitação enviada com sucesso!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function accept($id)
     {
-        //
+        $requestModel = SkillRequest::findOrFail($id);
+
+        if ($requestModel->to_user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $requestModel->update(['status' => 'aceita']);
+
+        Session::create([
+            'request_id' => $requestModel->id,
+            'data_sessao' => now(),
+            'start_time' => now()->format('H:i:s'),
+            'end_time' => now()->addHour()->format('H:i:s'),
+            'status' => 'pendente',
+            'observacoes' => null,
+        ]);
+
+        return back()->with('success', 'Solicitação aceita e sessão criada!');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function reject($id)
     {
-        //
-    }
+        $requestModel = SkillRequest::findOrFail($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        if ($requestModel->to_user_id !== Auth::id()) {
+            abort(403);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $requestModel->update(['status' => 'recusada']);
+
+        return back()->with('success', 'Solicitação recusada.');
     }
 }

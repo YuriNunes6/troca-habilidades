@@ -7,13 +7,11 @@ use App\Models\User;
 
 class AdminController extends Controller
 {
-    // Mostrar página de cadastro
     public function showCreate()
     {
         return view('admins.create');
     }
 
-    // Criar novo admin
     public function store(Request $request)
     {
         $request->validate([
@@ -26,20 +24,18 @@ class AdminController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'is_admin' => true, // marca como admin
+            'is_admin' => true,
         ]);
 
         return redirect()->route('admins.index')->with('success', 'Admin criado com sucesso!');
     }
 
-    // Listar admins
     public function index()
     {
-        $admins = User::where('is_admin', true)->get();
+        $admins = User::where('is_admin', true)->paginate(10);
         return view('admins.index', compact('admins'));
     }
 
-    // Editar admin
     public function edit(User $admin)
     {
         return view('admins.edit', compact('admin'));
@@ -59,6 +55,9 @@ class AdminController extends Controller
 
     public function destroy(User $admin)
     {
+        if ($admin->id === auth()->id()) {
+            return back()->with('error', 'Você não pode deletar seu próprio usuário.');
+        }
         $admin->delete();
         return redirect()->route('admins.index')->with('success', 'Admin removido com sucesso!');
     }
