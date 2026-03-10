@@ -35,5 +35,5 @@ class Request extends Model
     {
         return $this->hasOne(Session::class);
     }
-    
+
 }

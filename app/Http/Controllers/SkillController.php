@@ -26,7 +26,7 @@ class SkillController extends Controller
 
         Skill::create(['name' => $request->name]);
 
-        return redirect()->route('skills.index')->with('success', 'Habilidade criada!');
+        return redirect()->route('admin.skills.index')->with('success', 'Habilidade criada!');
     }
 
     public function edit(string $id)
@@ -58,6 +58,6 @@ class SkillController extends Controller
 
         $skill->delete();
 
-        return redirect()->route('skills.index')->with('success', 'Habilidade removida!');
+        return redirect()->route('admin.skills.index')->with('success', 'Habilidade removida!');
     }
 }

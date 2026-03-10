@@ -8,6 +8,7 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\AvaliacaoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\User\SkillController as UserSkillController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,7 +66,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('avaliacoes', [AvaliacaoController::class,'store'])->name('avaliacoes.store');
 
     // Skills (visualização)
-    Route::get('skills', [SkillController::class,'index'])->name('skills.index');
+    Route::middleware(['auth'])->prefix('user')->name('user.')->group(function() {
+    Route::get('skills', [App\Http\Controllers\User\SkillController::class,'index'])->name('skills.index');
+    Route::get('skills/edit', [UserSkillController::class, 'edit'])
+    ->name('skills.edit');
+    Route::put('skills/edit', [UserSkillController::class, 'update'])->name('skills.update');
+    });
 });
 
 

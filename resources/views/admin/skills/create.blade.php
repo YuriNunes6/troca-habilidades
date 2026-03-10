@@ -3,82 +3,214 @@
 @section('title', 'Cadastrar Skill')
 
 @section('content')
-<div class="admin-skill-container">
-    <h1 class="text-2xl font-bold mb-4">Cadastrar Nova Skill</h1>
+<div class="admin-wrapper">
+    <div class="container-custom">
+        
+        {{-- Navegação de Retorno --}}
 
-    @if(session('success'))
-        <div class="alert alert-success mb-4">{{ session('success') }}</div>
-    @endif
+        <div class="form-container">
+            {{-- Cabeçalho --}}
+            <div class="form-header">
+                <div class="icon-circle bg-green">
+                    <i class="bi bi-plus-circle-fill"></i>
+                </div>
+                <h1 class="form-title">Nova Habilidade</h1>
+                <p class="form-subtitle">Cadastre uma nova categoria de conhecimento para a comunidade.</p>
+            </div>
 
-    <form action="{{ route('admin.skills.store') }}" method="POST" class="form-skill">
-        @csrf
+            {{-- Alerta de Sucesso --}}
+            @if(session('success'))
+                <div class="alert-custom success mb-4">
+                    <i class="bi bi-check-circle-fill"></i> {{ session('success') }}
+                </div>
+            @endif
 
-        <label for="name" class="font-semibold">Nome da Skill</label>
-        <input type="text" name="name" id="name" value="{{ old('name') }}" class="input-field">
-        @error('name')
-            <div class="alert alert-error">{{ $message }}</div>
-        @enderror
+            {{-- Formulário --}}
+            <form action="{{ route('admin.skills.store') }}" method="POST" class="skill-form">
+                @csrf
 
-        <button type="submit" class="btn-submit mt-4">Cadastrar Skill</button>
-    </form>
+                <div class="input-group-custom">
+                    <label for="name">Nome da Habilidade</label>
+                    <input type="text" name="name" id="name" 
+                           value="{{ old('name') }}" 
+                           class="@error('name') is-invalid @enderror" 
+                           placeholder="Ex: Design de Interface (UI)" 
+                           required>
+                    @error('name')
+                        <span class="error-text"><i class="bi bi-exclamation-triangle"></i> {{ $message }}</span>
+                    @enderror
+                </div>
 
-    <a href="{{ route('skills.index') }}" class="btn-back mt-4 inline-block">← Voltar para Skills</a>
+                <div class="input-group-custom">
+                    <label for="description">Descrição (Opcional)</label>
+                    <textarea name="description" id="description" 
+                              rows="4" 
+                              placeholder="Explique brevemente o que os usuários podem ensinar ou aprender aqui..."
+                              class="@error('description') is-invalid @enderror">{{ old('description') }}</textarea>
+                    @error('description')
+                        <span class="error-text">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-actions mt-4">
+                    <button type="submit" class="btn-save btn-green">
+                        <i class="bi bi-cloud-arrow-up"></i> Cadastrar Skill
+                    </button>
+                    <a href="{{ route('admin.skills.index') }}" class="btn-cancel">Cancelar e Sair</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <style>
-    .admin-skill-container{
-        max-width: 500px;
-        margin: 40px auto;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    /* Base unificada para evitar conflitos */
+    .admin-wrapper {
+        background-color: #f1f5f9;
+        min-height: 100vh;
+        padding: 60px 0;
+        font-family: 'Inter', sans-serif;
     }
 
-    .form-skill {
+    .container-custom {
+        max-width: 550px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .form-container {
+        background: white;
+        border-radius: 20px;
+        padding: 45px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border: 1px solid #e2e8f0;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .icon-circle {
+        width: 65px;
+        height: 65px;
+        border-radius: 18px;
         display: flex;
-        flex-direction: column;
-        margin-top: 12px;
-        margin-bottom: 15px;
-        gap: 10px;
-    }
-
-    .input-field {
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-
-    .btn-submit {
-        padding: 10px;
-        background-color: #2563eb;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        font-size: 1.8rem;
         color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
     }
 
-    .btn-submit:hover {
-        background-color: #1e40af;
+    .bg-green { background: #10b981; }
+
+    .form-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
     }
 
-    .btn-back {
-        color: #2563eb;
-        text-decoration: none;
+    .form-subtitle {
+        color: #64748b;
+        margin-top: 8px;
+        font-size: 0.95rem;
     }
 
-    .btn-back:hover {
-        text-decoration: underline;
+    /* Inputs e Labels */
+    .input-group-custom {
+        margin-bottom: 22px;
     }
 
-    .alert-error {
-        color: red;
+    .input-group-custom label {
+        display: block;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 8px;
         font-size: 0.9rem;
     }
 
-    .alert-success {
-        color: green;
-        font-size: 0.95rem;
+    .input-group-custom input, 
+    .input-group-custom textarea {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        outline: none;
     }
+
+    .input-group-custom input:focus {
+        border-color: #10b981;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    }
+
+    /* Erros e Alertas */
+    .is-invalid {
+        border-color: #ef4444 !important;
+    }
+
+    .error-text {
+        color: #ef4444;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-top: 6px;
+        display: block;
+    }
+
+    .alert-custom {
+        padding: 15px;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .alert-custom.success {
+        background: #ecfdf5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    /* Botões */
+    .form-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-save {
+        width: 100%;
+        padding: 15px;
+        border-radius: 12px;
+        border: none;
+        color: white;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: transform 0.2s, background 0.2s;
+    }
+
+    .btn-green { background: #10b981; }
+    .btn-green:hover { background: #059669; transform: translateY(-2px); }
+
+    .btn-cancel {
+        text-align: center;
+        color: #94a3b8;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 10px;
+    }
+
+    .btn-cancel:hover { color: #475569; }
 </style>
 @endsection
